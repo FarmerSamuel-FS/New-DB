@@ -20,34 +20,39 @@ const createFighter = async (req, res) => {
 
 
 const getAllFighters = async (req, res) => {
-    console.log(">>>", req.query);
-    let querString = JSON.stringify(req.query);
-    querString = querString.replace(/\b(gt|gte|lt|lte)\b/g, match => `$${match}`);
-    let query = Fighters.find(JSON.stringify(req.query));
-    if(req.query.select){
-        const fields = req.query.select.split( ",").join(" ");
-        query = Fighters.find({}).select(fields);
-    }
-
-    if(req.query.sort){
-        const sortBy = req.query.sort.split( ",").join(" ");
-        query = Fighters.find({}).sort(sortBy);
-    }
-    query = Fighters.find({});
-    const page = parseInt(req.query.page) || 1;
-    const limit = parseInt(req.query.limit) || 2;
-    const skip = (page - 1) * limit;
-    query.skip(skip).limit(limit);
-
-
     try {
+        console.log(">>>", req.query);
+        let query = Fighters.find();
+        if (req.query) {
+            const queryObject = { ...req.query };
+            const excludedFields = ['page', 'limit', 'sort', 'select'];
+            excludedFields.forEach(el => delete queryObject[el]);
+
+            const queryString = JSON.stringify(queryObject)
+                .replace(/\b(gt|gte|lt|lte)\b/g, match => `$${match}`);
+            query = query.find(JSON.parse(queryString));
+        }
+        if (req.query.select) {
+            const fields = req.query.select.split(",").join(" ");
+            query = query.select(fields);
+        }
+        if (req.query.sort) {
+            const sortBy = req.query.sort.split(",").join(" ");
+            query = query.sort(sortBy);
+        }
+        const page = parseInt(req.query.page) || 1;
+        const limit = parseInt(req.query.limit) || 5;
+        const skip = (page - 1) * limit;
+        query = query.skip(skip).limit(limit);
         const fighters = await query;
+
         res.status(200).json({ data: fighters, success: true, message: `${req.method} - request to Fighter endpoint` });
     } catch (error) {
         console.log(error);
         res.status(500).json(error);
     }
 };
+
 
 const getFighterByID = async (req, res) => {
     try {

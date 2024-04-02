@@ -1,67 +1,88 @@
 const Fighters = require("../models/Fighters");
 
-const createFighter= async (req, res) =>{
-    const {fighter} = req.body;
+const createFighter = async (req, res) => {
+    const { fighter } = req.body;
     try {
         const newFighter = await Fighters.create(fighter);
-    console.log("data >>>", newFighter);
-    res.status(200).json({sucess: true, message: `${req.method} - request to Fighter endpoint`
-});
-    } catch (error) {{
-        if (error.name="ValidationError") {
+        console.log("data >>>", newFighter);
+        // Return the created fighter object with its _id property in the response
+        res.status(200).json({ data: newFighter, success: true, message: `${req.method} - request to Fighter endpoint` });
+    } catch (error) {
+        if (error.name === "ValidationError") {
             console.error("Error Validating!", error);
-            res.status(422).json(error);} 
-            else {
-                console.error(error);
-                res.status(500).json(error);
-                }
-            }
+            res.status(422).json(error);
+        } else {
+            console.error(error);
+            res.status(500).json(error);
         }
-    };
-
-const getAllFighters = async (req, res) =>{
-    try {
-        const fighters =await Fighters.find();
-    res.status(200).json({ data: fighters, sucess: true, message: `${req.method} - request to Fighter endpoint`
-});
-    } catch (error) {
-        console.log(error);
     }
-    };
+};
 
-const getFighterByID = async (req, res)=>{
+
+const getAllFighters = async (req, res) => {
     try {
-        const { id } = req.params;
-    const fighters =await Fighters.findById(id, req.body);
-    res.status(200).json({ data: fighters, sucess: true, message: `${req.method} - request to Fighter endpoint`});
+        const fighters = await Fighters.find();
+        res.status(200).json({ data: fighters, success: true, message: `${req.method} - request to Fighter endpoint` });
     } catch (error) {
         console.log(error);
+        res.status(500).json(error);
     }
-    
 };
 
-const updateFighter = async (req, res)=>{
+const getFighterByID = async (req, res) => {
     try {
         const { id } = req.params;
-    const fighters = await Fighters.findByIdAndUpdate(id, req.body, {new: true});
-    res.status(200).json({ data: fighters, success: true, message: `${req.method} - request to Fighter endpoint`,});
+        const fighter = await Fighters.findById(id);
+        if (!fighter) {
+            return res.status(404).json({ success: false, message: "Fighter not found" });
+        }
+        res.status(200).json({ data: fighter, success: true, message: `${req.method} - request to Fighter endpoint` });
     } catch (error) {
         console.log(error);
-    } 
+        res.status(500).json(error);
+    }
 };
-const deleteFighter = async (req, res)=>{
+
+const updateFighter = async (req, res) => {
     try {
         const { id } = req.params;
-    const fighters = await Fighters.findByIdAndDelete(id, req.body, {success: true});
-    res.status(200).json({ data: fighters, sucess: true, message: `${req.method} - request to Fighter endpoint`});
+        const { name, age, league, description } = req.body.fighter;
+
+        const updatedFighter = await Fighters.findByIdAndUpdate(id, { name, age, league, description }, { new: true });
+        if (!updatedFighter) {
+            return res.status(404).json({ success: false, message: "Fighter not found" });
+        }
+        return res.status(200).json({ data: updatedFighter, success: true, message: `${req.method} - request to Fighter endpoint` });
     } catch (error) {
         console.log(error);
-    }  
+        return res.status(500).json(error);
+    }
 };
+
+
+
+
+
+const deleteFighter = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const deletedFighter = await Fighters.findByIdAndDelete(id);
+        if (!deletedFighter) {
+            return res.status(404).json({ success: false, message: "Fighter not found" });
+        }
+        // Respond with an empty body for successful deletion
+        res.status(200).send();
+    } catch (error) {
+        console.log(error);
+        res.status(500).json(error);
+    }
+};
+
+
 module.exports = {
     createFighter,
     getAllFighters,
     getFighterByID,
     updateFighter,
     deleteFighter
-}
+};

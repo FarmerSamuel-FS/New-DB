@@ -23,6 +23,8 @@ const fighterSchema = new mongoose.Schema({
         trim: true,
         maxlength: [500, "Please provide fighters description"]
     }
+    
+    
 });
 
 module.exports = mongoose.model('Fighter', fighterSchema);

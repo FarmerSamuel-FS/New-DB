@@ -44,9 +44,9 @@ const getAllLeagues = async (req, res) => {
         const limit = parseInt(req.query.limit) || 5;
         const skip = (page - 1) * limit;
         query = query.skip(skip).limit(limit);
-        const league = await query;
+        const leagues = await query;
 
-        res.status(200).json({ data: league, success: true, message: `${req.method} - request to League endpoint` });
+        res.status(200).json({ data: leagues, success: true, message: `${req.method} - request to League endpoint` });
     } catch (error) {
         console.log(error);
         res.status(500).json(error);

@@ -1,0 +1,577 @@
+{
+	"info": {
+		"_postman_id": "f9fe2040-84e8-4ec4-b340-995841e3e9e4",
+		"name": "MMA",
+		"description": "# 🚀 Get started here\n\nThis template guides you through CRUD operations (GET, POST, PUT, DELETE), variables, and tests.\n\n## 🔖 **How to use this template**\n\n#### **Step 1: Send requests**\n\nRESTful APIs allow you to perform CRUD operations using the POST, GET, PUT, and DELETE HTTP methods.\n\nThis collection contains each of these [request](https://learning.postman.com/docs/sending-requests/requests/) types. Open each request and click \"Send\" to see what happens.\n\n#### **Step 2: View responses**\n\nObserve the response tab for status code (200 OK), response time, and size.\n\n#### **Step 3: Send new Body data**\n\nUpdate or add new data in \"Body\" in the POST request. Typically, Body data is also used in PUT request.\n\n```\n{\n    \"name\": \"Add your name in the body\"\n}\n\n ```\n\n#### **Step 4: Update the variable**\n\nVariables enable you to store and reuse values in Postman. We have created a [variable](https://learning.postman.com/docs/sending-requests/variables/) called `base_url` with the sample request [https://postman-api-learner.glitch.me](https://postman-api-learner.glitch.me). Replace it with your API endpoint to customize this collection.\n\n#### **Step 5: Add tests in the \"Tests\" tab**\n\nTests help you confirm that your API is working as expected. You can write test scripts in JavaScript and view the output in the \"Test Results\" tab.\n\n<img src=\"https://content.pstmn.io/b5f280a7-4b09-48ec-857f-0a7ed99d7ef8/U2NyZWVuc2hvdCAyMDIzLTAzLTI3IGF0IDkuNDcuMjggUE0ucG5n\">\n\n## 💪 Pro tips\n\n- Use folders to group related requests and organize the collection.\n- Add more [scripts](https://learning.postman.com/docs/writing-scripts/intro-to-scripts/) in \"Tests\" to verify if the API works as expected and execute workflows.\n    \n\n## 💡Related templates\n\n[API testing basics](https://go.postman.co/redirect/workspace?type=personal&collectionTemplateId=e9a37a28-055b-49cd-8c7e-97494a21eb54&sourceTemplateId=ddb19591-3097-41cf-82af-c84273e56719)  \n[API documentation](https://go.postman.co/redirect/workspace?type=personal&collectionTemplateId=e9c28f47-1253-44af-a2f3-20dce4da1f18&sourceTemplateId=ddb19591-3097-41cf-82af-c84273e56719)  \n[Authorization methods](https://go.postman.co/redirect/workspace?type=personal&collectionTemplateId=31a9a6ed-4cdf-4ced-984c-d12c9aec1c27&sourceTemplateId=ddb19591-3097-41cf-82af-c84273e56719)",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "33379853"
+	},
+	"item": [
+		{
+			"name": "Fighters",
+			"item": [
+				{
+					"name": "Get all fighters",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200 (OK)\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Response body is an array\", function () {",
+									"    const responseData = pm.response.json();",
+									"    pm.expect(responseData.data).to.be.an('array');",
+									"});",
+									"",
+									"pm.test(\"Each fighter object has expected properties\", function () {",
+									"    const responseData = pm.response.json();",
+									"    const fighters = responseData.data;",
+									"",
+									"    pm.expect(fighters).to.be.an('array');",
+									"    fighters.forEach(function (fighter) {",
+									"        pm.expect(fighter).to.have.property('name');",
+									"        pm.expect(fighter).to.have.property('age');",
+									"        // Add more properties as needed",
+									"    });",
+									"});",
+									"",
+									"pm.test(\"Response Content-Type header is application/json\", function () {",
+									"    pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\");",
+									"});",
+									"",
+									"pm.test(\"Data array in the response should exist and be an array\", function () {",
+									"    const responseData = pm.response.json();",
+									"    pm.expect(responseData).to.be.an('object');",
+									"    pm.expect(responseData.data).to.exist.and.to.be.an('array');",
+									"});",
+									"",
+									"pm.test(\"Each fighter object has a non-empty name property\", function () {",
+									"    const responseData = pm.response.json();",
+									"    const fighters = responseData.data;",
+									"",
+									"    pm.expect(fighters).to.be.an('array');",
+									"    fighters.forEach(function (fighter) {",
+									"        pm.expect(fighter.name).to.exist.and.to.be.a('string').and.to.have.lengthOf.at.least(1, \"Name should not be empty\");",
+									"    });",
+									"});",
+									"",
+									"pm.test(\"Each fighter object has a non-negative 'age' property\", function () {",
+									"    const responseData = pm.response.json();",
+									"    const fighters = responseData.data;",
+									"",
+									"    pm.expect(fighters).to.be.an('array');",
+									"    fighters.forEach(function (fighter) {",
+									"        pm.expect(fighter.age).to.be.a('number').and.to.be.at.least(0);",
+									"    });",
+									"});",
+									"",
+									"pm.test(\"Success property is a boolean with value true\", function () {",
+									"    const responseData = pm.response.json();",
+									"    pm.expect(responseData).to.have.property('success').that.is.a('boolean').and.equal(true);",
+									"});",
+									"",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:5001/api/v1/fighter",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5001",
+							"path": [
+								"api",
+								"v1",
+								"fighter"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Fighter by ID",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200 (OK)\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Response body contains expected fighter\", function () {",
+									"    const responseBody = pm.response.json().data; ",
+									"    ",
+									"    pm.expect(responseBody).to.have.property('_id').and.to.eql('660b418261169baf33c9c19f');",
+									"    pm.expect(responseBody).to.have.property('name').and.to.eql('Jim Miller'); ",
+									"    pm.expect(responseBody).to.have.property('age').and.to.eql(42); ",
+									"    pm.expect(responseBody).to.have.property('league').and.to.eql('UFC'); ",
+									"});",
+									"pm.test(\"Response body contains expected description\", function () {",
+									"    const responseBody = pm.response.json().data; ",
+									"    pm.expect(responseBody).to.have.property('description').and.to.eql('Longest running active fighter in the business'); // Expected description",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5001/api/v1/fighter/660b418261169baf33c9c19f",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5001",
+							"path": [
+								"api",
+								"v1",
+								"fighter",
+								"660b418261169baf33c9c19f"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Post Fighter",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200 (Created)\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Response has created resource ID\", function(){",
+									"    const responseBody = pm.response.json();",
+									"    console.log(responseBody); ",
+									"    const resourceId = responseBody.data._id;",
+									"    ",
+									"    pm.expect(resourceId).to.be.a('string').and.not.null;",
+									"    ",
+									"    console.log(\"Created resource ID:\", resourceId);",
+									"    ",
+									"    // Store the resource ID in collection variables for future use",
+									"    pm.collectionVariables.set(\"createdResourceId\", resourceId);",
+									"});",
+									"",
+									"pm.test(\"The response has all properties\", () => {",
+									"    const responseBody = pm.response.json();",
+									"    const { data } = responseBody; // Handle cases where data might be undefined",
+									"    if (data) {",
+									"        pm.expect(data.name).to.be.a('string');",
+									"        pm.expect(data.name).to.eql('Jim Miller');",
+									"        pm.expect(data.age).to.eql(40);",
+									"        pm.expect(data.age).to.be.a('number');",
+									"    }",
+									"});",
+									"",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"fighter\": {\n        \"name\": \"Jim Miller\",\n        \"age\": \"40\",\n        \"league\": \"UFC\",\n        \"description\": \"Longest running active fighter in the business\"\n    }\n}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5001/api/v1/fighter",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5001",
+							"path": [
+								"api",
+								"v1",
+								"fighter"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Fighter by ID",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200 (OK)\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"pm.test(\"Response body contains updated fighter\", function () {",
+									"    const responseBody = pm.response.json().data; ",
+									"    pm.expect(responseBody).to.have.property('_id');",
+									"    pm.expect(responseBody).to.have.property('name').and.to.eql('Jim Miller'); ",
+									"    pm.expect(responseBody).to.have.property('age').and.to.eql(42);",
+									"    pm.expect(responseBody).to.have.property('league').and.to.eql('UFC');",
+									"});",
+									"",
+									"pm.test(\"Updated age of the fighter\", function () {",
+									"    const responseBody = pm.response.json().data; ",
+									"    pm.expect(responseBody.age).to.eql(42); ",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"fighter\": {\n        \"name\": \"Jim Miller\",\n        \"age\": 42,\n        \"league\": \"UFC\",\n        \"description\": \"Longest running active fighter in the business\"\n    }\n}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5001/api/v1/fighter/660b418261169baf33c9c19f",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5001",
+							"path": [
+								"api",
+								"v1",
+								"fighter",
+								"660b418261169baf33c9c19f"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Fighter",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"",
+									"pm.test(\"Status code is 200 (Deleted)\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Response body is empty\", function () {",
+									"    pm.expect(pm.response.text()).to.be.empty;",
+									"});",
+									"",
+									"pm.test(\"Delete non-existent fighter\", function () {",
+									"    const responseBody = pm.response.text();",
+									"    pm.expect(responseBody).to.eql('');",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5001/api/v1/fighter/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5001",
+							"path": [
+								"api",
+								"v1",
+								"fighter",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Fighters with Range Filter",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const fighters = pm.response.json().data;",
+									"",
+									"// Test for response properties and content type",
+									"pm.test('Response should be okay to process and have data property', function () {",
+									"    pm.response.to.not.be.error;",
+									"    pm.expect(pm.response.headers.get('Content-Type')).to.include('application/json');",
+									"    pm.response.to.have.jsonBody('data');",
+									"    pm.expect(pm.response.json()).to.have.property('data');",
+									"});",
+									"",
+									"// Test for status code",
+									"pm.test('Status code is 200', function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"// Test for sorting by age",
+									"pm.test(\"Response is sorted correctly by age\", function () {",
+									"    for (let i = 0; i < fighters.length - 1; i++) {",
+									"        pm.expect(fighters[i].age).to.be.at.most(fighters[i + 1].age);",
+									"    }",
+									"});",
+									"",
+									"// Test for selection within age range",
+									"pm.test(\"Response contains only fighters between 20 and 34 years old\", function () {",
+									"    for (let i = 0; i < fighters.length; i++) {",
+									"        pm.expect(fighters[i].age).to.be.within(20, 33); // Adjusted upper limit to 33",
+									"    }",
+									"});",
+									"",
+									"// Test for presence of fighter properties",
+									"pm.test(\"Fighter objects have required properties\", function () {",
+									"    fighters.forEach(function(fighter) {",
+									"        pm.expect(fighter).to.have.property(\"_id\");",
+									"        pm.expect(fighter).to.have.property(\"name\");",
+									"        pm.expect(fighter).to.have.property(\"age\");",
+									"    });",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:5001/api/v1/fighter?age[gte]=20&age[lt]=40&sort=age,name",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5001",
+							"path": [
+								"api",
+								"v1",
+								"fighter"
+							],
+							"query": [
+								{
+									"key": "age[gte]",
+									"value": "20"
+								},
+								{
+									"key": "age[lt]",
+									"value": "40"
+								},
+								{
+									"key": "sort",
+									"value": "age,name"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Leagues",
+			"item": [
+				{
+					"name": "Get All Leagues",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:5001/api/v1/league",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5001",
+							"path": [
+								"api",
+								"v1",
+								"league"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get League by ID",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				},
+				{
+					"name": "Post League",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:5001/api/v1/league",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5001",
+							"path": [
+								"api",
+								"v1",
+								"league"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update League",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5001/api/v1/league/660a43d2f6a41d1823801c17",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5001",
+							"path": [
+								"api",
+								"v1",
+								"league",
+								"660a43d2f6a41d1823801c17"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete League",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:5001/api/v1/league/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5001",
+							"path": [
+								"api",
+								"v1",
+								"league",
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "id",
+			"value": "1"
+		},
+		{
+			"key": "base_url",
+			"value": "https://postman-rest-api-learner.glitch.me/"
+		},
+		{
+			"key": "createdResourceId",
+			"value": ""
+		}
+	]
+}

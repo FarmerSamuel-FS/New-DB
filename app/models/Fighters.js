@@ -1,6 +1,5 @@
 const mongoose = require("mongoose");
 
-
 const fighterSchema = new mongoose.Schema({
     name: {
         type: String,
@@ -9,22 +8,22 @@ const fighterSchema = new mongoose.Schema({
         trim: true,
         maxlength: [50,"Max characters are 50"]
     },
-    age: {type: Number,
-    required: false,
-    trim:true,
-    maxlength: [3, "Age must be 0-999"]},
-    
-    league: {type:String,
-        trim: true,
-        maxlength: [50, "league name can only be 50 characters"]
-},
+    age: {
+        type: Number,
+        required: false,
+        trim:true,
+        maxlength: [3, "Age must be 0-999"]
+    },
+    league: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'League' 
+    },
     description: {
         type: String,
         trim: true,
         maxlength: [500, "Please provide fighters description"]
-    }
-    
-    
+    },
+    Leagues: [{ type: mongoose.Schema.Types.ObjectId, ref: 'League' }] 
 });
 
 module.exports = mongoose.model('Fighter', fighterSchema);

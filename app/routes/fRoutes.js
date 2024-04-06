@@ -11,5 +11,5 @@ router.get("/", getAllFighters );
 router.post("/",createFighter );
 router.put("/:id", updateFighter);
 router.delete("/:id", deleteFighter);
- 
+
 module.exports = router

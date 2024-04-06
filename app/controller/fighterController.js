@@ -1,11 +1,11 @@
 const Fighters = require("../models/Fighters");
+const Messages = require("../db/messages");
 
 const createFighter = async (req, res) => {
     const { fighter } = req.body;
     try {
         const newFighter = await Fighters.create(fighter);
         console.log("data >>>", newFighter);
-        // Return the created fighter object with its _id property in the response
         res.status(200).json({ data: newFighter, success: true, message: `${req.method} - request to Fighter endpoint` });
     } catch (error) {
         if (error.name === "ValidationError") {
@@ -13,15 +13,13 @@ const createFighter = async (req, res) => {
             res.status(422).json(error);
         } else {
             console.error(error);
-            res.status(500).json(error);
+            res.status(500).json({ success: false, message: Messages.SERVER_ERROR }); 
         }
     }
 };
 
-
 const getAllFighters = async (req, res) => {
     try {
-        console.log(">>>", req.query);
         let query = Fighters.find();
         if (req.query) {
             const queryObject = { ...req.query };
@@ -41,32 +39,30 @@ const getAllFighters = async (req, res) => {
             query = query.sort(sortBy);
         }
         const page = parseInt(req.query.page) || 1;
-        const limit = parseInt(req.query.limit) || 5;
+        const limit = parseInt(req.query.limit) || 10;
         const skip = (page - 1) * limit;
         query = query.skip(skip).limit(limit);
-        const fighters = await query;
-
+        const fighters = await query.populate('league');
         res.status(200).json({ data: fighters, success: true, message: `${req.method} - request to Fighter endpoint` });
     } catch (error) {
         console.log(error);
-        res.status(500).json(error);
+        res.status(500).json({ success: false, message: Messages.SERVER_ERROR }); 
     }
 };
-
-
 const getFighterByID = async (req, res) => {
     try {
         const { id } = req.params;
-        const fighter = await Fighters.findById(id);
+        const fighter = await Fighters.findById(id).select('-__v').populate('league'); 
         if (!fighter) {
-            return res.status(404).json({ success: false, message: "Fighter not found" });
+            return res.status(404).json({ success: false, message: Messages.NO_SUCH_FIGHTER });
         }
         res.status(200).json({ data: fighter, success: true, message: `${req.method} - request to Fighter endpoint` });
     } catch (error) {
         console.log(error);
-        res.status(500).json(error);
+        res.status(500).json({ success: false, message: Messages.SERVER_ERROR }); 
     }
 };
+
 
 const updateFighter = async (req, res) => {
     try {
@@ -75,35 +71,28 @@ const updateFighter = async (req, res) => {
 
         const updatedFighter = await Fighters.findByIdAndUpdate(id, { name, age, league, description }, { new: true });
         if (!updatedFighter) {
-            return res.status(404).json({ success: false, message: "Fighter not found" });
+            return res.status(404).json({ success: false, message: Messages.NO_SUCH_FIGHTER });
         }
         return res.status(200).json({ data: updatedFighter, success: true, message: `${req.method} - request to Fighter endpoint` });
     } catch (error) {
         console.log(error);
-        return res.status(500).json(error);
+        return res.status(500).json({ success: false, message: Messages.SERVER_ERROR });
     }
 };
-
-
-
-
 
 const deleteFighter = async (req, res) => {
     try {
         const { id } = req.params;
         const deletedFighter = await Fighters.findByIdAndDelete(id);
         if (!deletedFighter) {
-            return res.status(404).json({ success: false, message: "Fighter not found" });
+            return res.status(404).json({ success: false, message: Messages.OBJECT_NOT_FOUND });
         }
-        // Respond with an empty body for successful deletion
         res.status(200).send();
     } catch (error) {
         console.log(error);
-        res.status(500).json(error);
+        res.status(500).json({ success: false, message: Messages.SERVER_ERROR });
     }
 };
-{timestamps: true};
-
 
 module.exports = {
     createFighter,

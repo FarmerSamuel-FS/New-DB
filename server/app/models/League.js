@@ -23,8 +23,12 @@ const leagueSchema = new mongoose.Schema({
         trim: true,
         maxlength: [500, "Please provide league description"]
     },
-    fighters: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Fighter' }] // Reference to fighters
+    
+    fighters: [{ 
+        type: mongoose.Schema.Types.ObjectId, 
+        ref: 'fighter' 
+    }] // Reference to fighters
 },
 { timestamps: true });
 
-module.exports = mongoose.model('League', leagueSchema);
+module.exports = mongoose.model('league', leagueSchema);

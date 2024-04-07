@@ -14,16 +14,20 @@ const fighterSchema = new mongoose.Schema({
         trim:true,
         maxlength: [3, "Age must be 0-999"]
     },
-    league: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'League' 
-    },
+    
+    
     description: {
         type: String,
         trim: true,
         maxlength: [500, "Please provide fighters description"]
     },
-    Leagues: [{ type: mongoose.Schema.Types.ObjectId, ref: 'League' }] 
+    league: [
+        { 
+        type: mongoose.Schema.Types.ObjectId, 
+        ref: 'league' 
+    }
+], 
 });
+{ timestamps: true };
 
-module.exports = mongoose.model('Fighter', fighterSchema);
+module.exports = mongoose.model('fighter', fighterSchema);

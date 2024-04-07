@@ -20,7 +20,7 @@ const createFighter = async (req, res) => {
 
 const getAllFighters = async (req, res) => {
     try {
-        let query = Fighters.find();
+        let query = Fighters.find().select('-__v'); 
         if (req.query) {
             const queryObject = { ...req.query };
             const excludedFields = ['page', 'limit', 'sort', 'select'];
@@ -39,11 +39,11 @@ const getAllFighters = async (req, res) => {
             query = query.sort(sortBy);
         }
         const page = parseInt(req.query.page) || 1;
-        const limit = parseInt(req.query.limit) || 10;
+        const limit = parseInt(req.query.limit) || 5;
         const skip = (page - 1) * limit;
         query = query.skip(skip).limit(limit);
-        const fighters = await query.populate('league');
-        res.status(200).json({ data: fighters, success: true, message: `${req.method} - request to Fighter endpoint` });
+        const leagues = await query.populate('league');
+        res.status(200).json({ data: leagues, success: true, message: `${req.method} - request to League endpoint` });
     } catch (error) {
         console.log(error);
         res.status(500).json({ success: false, message: Messages.SERVER_ERROR }); 
